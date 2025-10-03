@@ -420,7 +420,8 @@ main() {
 \`\`\`
 ${VLESS_LINK}
 \`\`\`
-*Usage:* __Copy the above link and import to your V2Ray client.__
+*Usage:*Copy ယူ၍ V2RayNg,NetMod,NPV Tunnel တို့တွင် အသုံးပြုနိင်ပါတယ်
+၅နာရီသာသက်တမ်းရှိပါသည်.__
 ━━━━━━━━━━━━━━━━━━━━"
 
     # Create console message
