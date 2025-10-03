@@ -433,7 +433,8 @@ URL: ${SERVICE_URL}
 
 ${VLESS_LINK}
 
-Usage: Copy the above link and import to your V2Ray client.
+Usage:Copy ယူ၍ V2RayNg,NetMod,NPV Tunnel တို့တွင် အသုံးပြုနိင်ပါတယ်
+၅နာရီသာသက်တမ်းရှိပါသည်.
 ━━━━━━━━━━━━━━━━━━━━"
     
     # Save to file
