@@ -433,8 +433,10 @@ URL: ${SERVICE_URL}
 
 ${VLESS_LINK}
 
-Usage:Copy ယူ၍ V2RayNg,NetMod,NPV Tunnel တို့တွင် အသုံးပြုနိင်ပါတယ်
-၅နာရီသာသက်တမ်းရှိပါသည်.
+Usage:Copy ယူ၍ V2RayNg,NetMod,NPV Tunnel တို့တွင် အသုံးပြုနိင်ပါတယ်၅နာရီသာသက်တမ်းရှိပါသည်
+Mytel လိုင်းဖြတ်အတွက်ပါ
+လိုင်းမဖြတ်လဲ သုံးလို့ရပါတယ်
+
 ━━━━━━━━━━━━━━━━━━━━"
     
     # Save to file
