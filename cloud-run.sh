@@ -66,28 +66,46 @@ validate_chat_id() {
 # Region selection function
 select_region() {
     echo
-    info "=== Region Selection ==="
-    echo "1. us-central1 (Iowa, USA)"
-    echo "2. us-west1 (Oregon, USA)" 
-    echo "3. us-east1 (South Carolina, USA)"
-    echo "4. europe-west1 (Belgium)"
-    echo "5. asia-southeast1 (Singapore)"
-    echo "6. asia-northeast1 (Tokyo, Japan)"
+    info "=== Region Selection (1-12) ==="
+    # Asia Regions (Recommended for Myanmar users)
+    echo "1. asia-southeast1 (Singapore) - Tier 2"
+    echo "2. asia-south1 (Mumbai, India) - Tier 1"
+    echo "3. asia-east1 (Taiwan) - Tier 1"
+    echo "4. asia-northeast1 (Tokyo, Japan)"
+    echo "5. asia-northeast2 (Osaka, Japan)"
+    echo "6. asia-southeast2 (Jakarta, Indonesia)"
+    # US Regions
+    echo "7. us-central1 (Iowa, USA) - Tier 1"
+    echo "8. us-west1 (Oregon, USA) - Tier 1"
+    echo "9. us-east1 (South Carolina, USA) - Tier 1"
+    # Europe Regions
+    echo "10. europe-west1 (Belgium) - Tier 1"
+    echo "11. europe-west4 (Netherlands)"
+    echo "12. europe-north1 (Finland)"
     echo
-    
+
     while true; do
-        read -p "Select region (1-6): " region_choice
+        read -p "Select region (1-12): " region_choice
         case $region_choice in
-            1) REGION="us-central1"; break ;;
-            2) REGION="us-west1"; break ;;
-            3) REGION="us-east1"; break ;;
-            4) REGION="europe-west1"; break ;;
-            5) REGION="asia-southeast1"; break ;;
-            6) REGION="asia-northeast1"; break ;;
-            *) echo "Invalid selection. Please enter a number between 1-6." ;;
+            # Asia Regions
+            1) REGION="asia-southeast1"; break ;;
+            2) REGION="asia-south1"; break ;;
+            3) REGION="asia-east1"; break ;;
+            4) REGION="asia-northeast1"; break ;;
+            5) REGION="asia-northeast2"; break ;;
+            6) REGION="asia-southeast2"; break ;;
+            # US Regions
+            7) REGION="us-central1"; break ;;
+            8) REGION="us-west1"; break ;;
+            9) REGION="us-east1"; break ;;
+            # Europe Regions
+            10) REGION="europe-west1"; break ;;
+            11) REGION="europe-west4"; break ;;
+            12) REGION="europe-north1"; break ;;
+            *) echo "Invalid selection. Please enter a number between 1-12." ;;
         esac
     done
-    
+
     info "Selected region: $REGION"
 }
 
@@ -96,15 +114,15 @@ select_telegram_destination() {
     echo
     info "=== Telegram Destination ==="
     echo "1. Send to Channel only"
-    echo "2. Send to Bot private message only" 
+    echo "2. Send to Bot private message only"
     echo "3. Send to both Channel and Bot"
     echo "4. Don't send to Telegram"
     echo
-    
+
     while true; do
         read -p "Select destination (1-4): " telegram_choice
         case $telegram_choice in
-            1) 
+            1)
                 TELEGRAM_DESTINATION="channel"
                 while true; do
                     read -p "Enter Telegram Channel ID: " TELEGRAM_CHANNEL_ID
@@ -112,9 +130,9 @@ select_telegram_destination() {
                         break
                     fi
                 done
-                break 
+                break
                 ;;
-            2) 
+            2)
                 TELEGRAM_DESTINATION="bot"
                 while true; do
                     read -p "Enter your Chat ID (for bot private message): " TELEGRAM_CHAT_ID
@@ -122,9 +140,9 @@ select_telegram_destination() {
                         break
                     fi
                 done
-                break 
+                break
                 ;;
-            3) 
+            3)
                 TELEGRAM_DESTINATION="both"
                 while true; do
                     read -p "Enter Telegram Channel ID: " TELEGRAM_CHANNEL_ID
@@ -138,11 +156,11 @@ select_telegram_destination() {
                         break
                     fi
                 done
-                break 
+                break
                 ;;
-            4) 
+            4)
                 TELEGRAM_DESTINATION="none"
-                break 
+                break
                 ;;
             *) echo "Invalid selection. Please enter a number between 1-4." ;;
         esac
@@ -153,7 +171,7 @@ select_telegram_destination() {
 get_user_input() {
     echo
     info "=== Service Configuration ==="
-    
+
     # Service Name
     while true; do
         read -p "Enter service name: " SERVICE_NAME
@@ -163,7 +181,7 @@ get_user_input() {
             error "Service name cannot be empty"
         fi
     done
-    
+
     # UUID
     while true; do
         read -p "Enter UUID: " UUID
@@ -172,7 +190,7 @@ get_user_input() {
             break
         fi
     done
-    
+
     # Telegram Bot Token (required for any Telegram option)
     if [[ "$TELEGRAM_DESTINATION" != "none" ]]; then
         while true; do
@@ -182,7 +200,7 @@ get_user_input() {
             fi
         done
     fi
-    
+
     # Host Domain (optional)
     read -p "Enter host domain [default: m.googleapis.com]: " HOST_DOMAIN
     HOST_DOMAIN=${HOST_DOMAIN:-"m.googleapis.com"}
@@ -192,31 +210,31 @@ get_user_input() {
 show_config_summary() {
     echo
     info "=== Configuration Summary ==="
-    echo "Project ID:    $(gcloud config get-value project)"
-    echo "Region:        $REGION"
-    echo "Service Name:  $SERVICE_NAME"
-    echo "Host Domain:   $HOST_DOMAIN"
-    echo "UUID:          $UUID"
-    
+    echo "Project ID:      $(gcloud config get-value project)"
+    echo "Region:          $REGION"
+    echo "Service Name:    $SERVICE_NAME"
+    echo "Host Domain:     $HOST_DOMAIN"
+    echo "UUID:            $UUID"
+
     if [[ "$TELEGRAM_DESTINATION" != "none" ]]; then
-        echo "Bot Token:     ${TELEGRAM_BOT_TOKEN:0:8}..."
-        echo "Destination:   $TELEGRAM_DESTINATION"
+        echo "Bot Token:       ${TELEGRAM_BOT_TOKEN:0:8}..."
+        echo "Destination:     $TELEGRAM_DESTINATION"
         if [[ "$TELEGRAM_DESTINATION" == "channel" || "$TELEGRAM_DESTINATION" == "both" ]]; then
-            echo "Channel ID:    $TELEGRAM_CHANNEL_ID"
+            echo "Channel ID:      $TELEGRAM_CHANNEL_ID"
         fi
         if [[ "$TELEGRAM_DESTINATION" == "bot" || "$TELEGRAM_DESTINATION" == "both" ]]; then
-            echo "Chat ID:       $TELEGRAM_CHAT_ID"
+            echo "Chat ID:         $TELEGRAM_CHAT_ID"
         fi
     else
-        echo "Telegram:      Not configured"
+        echo "Telegram:        Not configured"
     fi
     echo
-    
+
     while true; do
         read -p "Proceed with deployment? (y/n): " confirm
         case $confirm in
             [Yy]* ) break;;
-            [Nn]* ) 
+            [Nn]* )
                 info "Deployment cancelled by user"
                 exit 0
                 ;;
@@ -228,17 +246,17 @@ show_config_summary() {
 # Validation functions
 validate_prerequisites() {
     log "Validating prerequisites..."
-    
+
     if ! command -v gcloud &> /dev/null; then
         error "gcloud CLI is not installed. Please install Google Cloud SDK."
         exit 1
     fi
-    
+
     if ! command -v git &> /dev/null; then
         error "git is not installed. Please install git."
         exit 1
     fi
-    
+
     local PROJECT_ID=$(gcloud config get-value project)
     if [[ -z "$PROJECT_ID" || "$PROJECT_ID" == "(unset)" ]]; then
         error "No project configured. Run: gcloud config set project PROJECT_ID"
@@ -257,7 +275,7 @@ send_to_telegram() {
     local chat_id="$1"
     local message="$2"
     local response
-    
+
     response=$(curl -s -w "%{http_code}" -X POST \
         -H "Content-Type: application/json" \
         -d "{
@@ -267,10 +285,10 @@ send_to_telegram() {
             \"disable_web_page_preview\": true
         }" \
         https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage)
-    
+
     local http_code="${response: -3}"
     local content="${response%???}"
-    
+
     if [[ "$http_code" == "200" ]]; then
         return 0
     else
@@ -282,7 +300,7 @@ send_to_telegram() {
 send_deployment_notification() {
     local message="$1"
     local success_count=0
-    
+
     case $TELEGRAM_DESTINATION in
         "channel")
             log "Sending to Telegram Channel..."
@@ -293,7 +311,7 @@ send_deployment_notification() {
                 error "❌ Failed to send to Telegram Channel"
             fi
             ;;
-            
+
         "bot")
             log "Sending to Bot private message..."
             if send_to_telegram "$TELEGRAM_CHAT_ID" "$message"; then
@@ -303,10 +321,10 @@ send_deployment_notification() {
                 error "❌ Failed to send to Bot private message"
             fi
             ;;
-            
+
         "both")
             log "Sending to both Channel and Bot..."
-            
+
             # Send to Channel
             if send_to_telegram "$TELEGRAM_CHANNEL_ID" "$message"; then
                 log "✅ Successfully sent to Telegram Channel"
@@ -314,7 +332,7 @@ send_deployment_notification() {
             else
                 error "❌ Failed to send to Telegram Channel"
             fi
-            
+
             # Send to Bot
             if send_to_telegram "$TELEGRAM_CHAT_ID" "$message"; then
                 log "✅ Successfully sent to Bot private message"
@@ -323,13 +341,13 @@ send_deployment_notification() {
                 error "❌ Failed to send to Bot private message"
             fi
             ;;
-            
+
         "none")
             log "Skipping Telegram notification as configured"
             return 0
             ;;
     esac
-    
+
     # Check if at least one message was successful
     if [[ $success_count -gt 0 ]]; then
         log "Telegram notification completed ($success_count successful)"
@@ -342,49 +360,49 @@ send_deployment_notification() {
 
 main() {
     info "=== GCP Cloud Run V2Ray Deployment ==="
-    
+
     # Get user input
     select_region
     select_telegram_destination
     get_user_input
     show_config_summary
-    
+
     PROJECT_ID=$(gcloud config get-value project)
-    
+
     log "Starting Cloud Run deployment..."
     log "Project: $PROJECT_ID"
     log "Region: $REGION"
     log "Service: $SERVICE_NAME"
-    
+
     validate_prerequisites
-    
+
     # Set trap for cleanup
     trap cleanup EXIT
-    
+
     log "Enabling required APIs..."
     gcloud services enable \
         cloudbuild.googleapis.com \
         run.googleapis.com \
         iam.googleapis.com \
         --quiet
-    
+
     # Clean up any existing directory
     cleanup
-    
+
     log "Cloning repository..."
     if ! git clone https://github.com/cxanminthar/gcp-v2ray.git; then
         error "Failed to clone repository"
         exit 1
     fi
-    
+
     cd gcp-v2ray
-    
+
     log "Building container image..."
     if ! gcloud builds submit --tag gcr.io/${PROJECT_ID}/gcp-v2ray-image --quiet; then
         error "Build failed"
         exit 1
     fi
-    
+
     log "Deploying to Cloud Run..."
     if ! gcloud run deploy ${SERVICE_NAME} \
         --image gcr.io/${PROJECT_ID}/gcp-v2ray-image \
@@ -397,18 +415,18 @@ main() {
         error "Deployment failed"
         exit 1
     fi
-    
+
     # Get the service URL
     SERVICE_URL=$(gcloud run services describe ${SERVICE_NAME} \
         --region ${REGION} \
         --format 'value(status.url)' \
         --quiet)
-    
+
     DOMAIN=$(echo $SERVICE_URL | sed 's|https://||')
-    
+
     # Create Vless share link
     VLESS_LINK="vless://${UUID}@${HOST_DOMAIN}:443?path=%2Ftgkmks26381Mr&security=tls&alpn=none&encryption=none&host=${DOMAIN}&type=ws&sni=${DOMAIN}#${SERVICE_NAME}"
-    
+
     # Create telegram message
     MESSAGE="━━━━━━━━━━━━━━━━━━━━
 *Cloud Run Deploy Success* ✅
@@ -438,17 +456,17 @@ Mytel လိုင်းဖြတ်အတွက်ပါ
 လိုင်းမဖြတ်လဲ သုံးလို့ရပါတယ်
 
 ━━━━━━━━━━━━━━━━━━━━"
-    
+
     # Save to file
     echo "$CONSOLE_MESSAGE" > deployment-info.txt
     log "Deployment info saved to deployment-info.txt"
-    
+
     # Display locally
     echo
     info "=== Deployment Information ==="
     echo "$CONSOLE_MESSAGE"
     echo
-    
+
     # Send to Telegram based on user selection
     if [[ "$TELEGRAM_DESTINATION" != "none" ]]; then
         log "Sending deployment info to Telegram..."
@@ -456,7 +474,7 @@ Mytel လိုင်းဖြတ်အတွက်ပါ
     else
         log "Skipping Telegram notification as per user selection"
     fi
-    
+
     log "Deployment completed successfully!"
     log "Service URL: $SERVICE_URL"
     log "Configuration saved to: deployment-info.txt"
