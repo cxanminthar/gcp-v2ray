@@ -19,6 +19,7 @@ warn() {
 
 error() {
     echo -e "${RED}[ERROR]${NC} $1"
+    return 1
 }
 
 info() {
@@ -66,7 +67,7 @@ validate_chat_id() {
 # Region selection function
 select_region() {
     echo
-    info "=== Region Selection (1-12) ==="
+    info "=== Region Selection (1-13) ===" # Updated count to 13
     # Asia Regions (Recommended for Myanmar users)
     echo "1. asia-southeast1 (Singapore) - Tier 2"
     echo "2. asia-south1 (Mumbai, India) - Tier 1"
@@ -78,14 +79,15 @@ select_region() {
     echo "7. us-central1 (Iowa, USA) - Tier 1"
     echo "8. us-west1 (Oregon, USA) - Tier 1"
     echo "9. us-east1 (South Carolina, USA) - Tier 1"
+    echo "10. us-east4 (Northern Virginia, USA) - Tier 1" # ADDED REGION
     # Europe Regions
-    echo "10. europe-west1 (Belgium) - Tier 1"
-    echo "11. europe-west4 (Netherlands)"
-    echo "12. europe-north1 (Finland)"
+    echo "11. europe-west1 (Belgium) - Tier 1" # Updated index
+    echo "12. europe-west4 (Netherlands)"      # Updated index
+    echo "13. europe-north1 (Finland)"        # Updated index
     echo
 
     while true; do
-        read -p "Select region (1-12): " region_choice
+        read -p "Select region (1-13): " region_choice # Updated prompt count
         case $region_choice in
             # Asia Regions
             1) REGION="asia-southeast1"; break ;;
@@ -98,11 +100,12 @@ select_region() {
             7) REGION="us-central1"; break ;;
             8) REGION="us-west1"; break ;;
             9) REGION="us-east1"; break ;;
+            10) REGION="us-east4"; break ;; # ADDED SELECTION
             # Europe Regions
-            10) REGION="europe-west1"; break ;;
-            11) REGION="europe-west4"; break ;;
-            12) REGION="europe-north1"; break ;;
-            *) echo "Invalid selection. Please enter a number between 1-12." ;;
+            11) REGION="europe-west1"; break ;;
+            12) REGION="europe-west4"; break ;;
+            13) REGION="europe-north1"; break ;;
+            *) echo "Invalid selection. Please enter a number between 1-13." ;; # Updated error message
         esac
     done
 
@@ -398,6 +401,8 @@ main() {
     cd gcp-v2ray
 
     log "Building container image..."
+    # Note: Using gcr.io for simplicity, but it's often better to use Artifact Registry path:
+    # gcloud builds submit --tag ${REGION}-docker.pkg.dev/${PROJECT_ID}/vless-repo-new/gcp-v2ray-image --quiet
     if ! gcloud builds submit --tag gcr.io/${PROJECT_ID}/gcp-v2ray-image --quiet; then
         error "Build failed"
         exit 1
@@ -424,7 +429,7 @@ main() {
 
     DOMAIN=$(echo $SERVICE_URL | sed 's|https://||')
 
-    # Create Vless share link
+    # Create Vless share link (ALPN None, No Fingerprint)
     VLESS_LINK="vless://${UUID}@${HOST_DOMAIN}:443?path=%2Ftgkmks26381Mr&security=tls&alpn=none&encryption=none&host=${DOMAIN}&type=ws&sni=${DOMAIN}#${SERVICE_NAME}"
 
     # Create telegram message
@@ -438,7 +443,10 @@ main() {
 \`\`\`
 ${VLESS_LINK}
 \`\`\`
-*Usage:* __Copy the above link and import to your V2Ray client.__
+*Usage:*Copy ယူ၍ V2RayNg,NetMod,NPV Tunnel တို့တွင် အသုံးပြုနိင်ပါတယ်
+၅နာရီသာသက်တမ်းရှိပါသည်.
+Mytel လိုင်းဖြတ်အတွက်ပါ
+လိုင်းမဖြတ်လဲ သုံးလို့ရပါတယ်
 ━━━━━━━━━━━━━━━━━━━━"
 
     # Create console message
@@ -451,10 +459,7 @@ URL: ${SERVICE_URL}
 
 ${VLESS_LINK}
 
-Usage:Copy ယူ၍ V2RayNg,NetMod,NPV Tunnel တို့တွင် အသုံးပြုနိင်ပါတယ်၅နာရီသာသက်တမ်းရှိပါသည်
-Mytel လိုင်းဖြတ်အတွက်ပါ
-လိုင်းမဖြတ်လဲ သုံးလို့ရပါတယ်
-
+Usage: Copy the above link and import to your V2Ray client.
 ━━━━━━━━━━━━━━━━━━━━"
 
     # Save to file
