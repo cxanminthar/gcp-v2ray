@@ -67,7 +67,7 @@ validate_chat_id() {
 # Region selection function
 select_region() {
     echo
-    info "=== Region Selection (1-13) ==="
+    info "=== Region Selection (1-13) ===" # Updated count to 13
     # Asia Regions (Recommended for Myanmar users)
     echo "1. asia-southeast1 (Singapore) - Tier 2"
     echo "2. asia-south1 (Mumbai, India) - Tier 1"
@@ -79,15 +79,15 @@ select_region() {
     echo "7. us-central1 (Iowa, USA) - Tier 1"
     echo "8. us-west1 (Oregon, USA) - Tier 1"
     echo "9. us-east1 (South Carolina, USA) - Tier 1"
-    echo "10. us-east4 (Northern Virginia, USA) - Tier 1"
+    echo "10. us-east4 (Northern Virginia, USA) - Tier 1" # ADDED REGION
     # Europe Regions
-    echo "11. europe-west1 (Belgium) - Tier 1"
-    echo "12. europe-west4 (Netherlands)"
-    echo "13. europe-north1 (Finland)"
+    echo "11. europe-west1 (Belgium) - Tier 1" # Updated index
+    echo "12. europe-west4 (Netherlands)"      # Updated index
+    echo "13. europe-north1 (Finland)"        # Updated index
     echo
 
     while true; do
-        read -p "Select region (1-13): " region_choice
+        read -p "Select region (1-13): " region_choice # Updated prompt count
         case $region_choice in
             # Asia Regions
             1) REGION="asia-southeast1"; break ;;
@@ -100,12 +100,12 @@ select_region() {
             7) REGION="us-central1"; break ;;
             8) REGION="us-west1"; break ;;
             9) REGION="us-east1"; break ;;
-            10) REGION="us-east4"; break ;;
+            10) REGION="us-east4"; break ;; # ADDED SELECTION
             # Europe Regions
             11) REGION="europe-west1"; break ;;
             12) REGION="europe-west4"; break ;;
             13) REGION="europe-north1"; break ;;
-            *) echo "Invalid selection. Please enter a number between 1-13." ;;
+            *) echo "Invalid selection. Please enter a number between 1-13." ;; # Updated error message
         esac
     done
 
