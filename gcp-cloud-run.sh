@@ -79,7 +79,7 @@ select_region() {
     echo "7. us-central1 (Iowa, USA) - Tier 1"
     echo "8. us-west1 (Oregon, USA) - Tier 1"
     echo "9. us-east1 (South Carolina, USA) - Tier 1"
-    echo "10. us-east4 (Northern Virginia, USA) - Tier 1" # ADDED REGION
+    echo "10. us-east4 (Northern Virginia, USA) - Tier 1"
     # Europe Regions
     echo "11. europe-west1 (Belgium) - Tier 1"
     echo "12. europe-west4 (Netherlands)"
@@ -100,7 +100,7 @@ select_region() {
             7) REGION="us-central1"; break ;;
             8) REGION="us-west1"; break ;;
             9) REGION="us-east1"; break ;;
-            10) REGION="us-east4"; break ;; # ADDED SELECTION
+            10) REGION="us-east4"; break ;;
             # Europe Regions
             11) REGION="europe-west1"; break ;;
             12) REGION="europe-west4"; break ;;
@@ -428,26 +428,11 @@ main() {
         --quiet)
 
     DOMAIN=$(echo $SERVICE_URL | sed 's|https://||')
-    
-    # ----------------------------------------------------
-    # START: Code to calculate 5-hour expiry time in MST
-    # ----------------------------------------------------
-    
-    log "Calculating VLESS expiry time (5 hours from now) in MST..."
-    # Set the timezone to Asia/Yangon (MST, UTC+06:30) for calculation
-    # Calculate current time in MST + 5 hours and format it
-    EXPIRY_TIME_MST=$(TZ='Asia/Yangon' date -d '+5 hours' '+%Y-%m-%d %H:%M:%S MST')
-    
-    # ----------------------------------------------------
-    # END: Code to calculate 5-hour expiry time in MST
-    # ----------------------------------------------------
-    
+
     # Create Vless share link (ALPN None, No Fingerprint)
-    # Remark ကို သက်တမ်းကုန်မည့်အချိန်ဖြင့် ပြင်ဆင်ထားသည်
-    VLESS_LINK="vless://${UUID}@${HOST_DOMAIN}:443?path=%2Ftgkmks26381Mr&security=tls&alpn=none&encryption=none&host=${DOMAIN}&type=ws&sni=${DOMAIN}#${SERVICE_NAME}-EXP-${EXPIRY_TIME_MST}"
+    VLESS_LINK="vless://${UUID}@${HOST_DOMAIN}:443?path=%2Ftgkmks26381Mr&security=tls&alpn=none&encryption=none&host=${DOMAIN}&type=ws&sni=${DOMAIN}#${SERVICE_NAME}"
 
     # Create telegram message
-    # Message ထဲတွင် သက်တမ်းကုန်ဆုံးမည့်အချိန်ကို ထည့်သွင်းထားသည်
     MESSAGE="━━━━━━━━━━━━━━━━━━━━
 *Cloud Run Deploy Success* ✅
 *Project:* \`${PROJECT_ID}\`
@@ -459,7 +444,6 @@ main() {
 ${VLESS_LINK}
 \`\`\`
 *Usage:*Copy ယူ၍ V2RayNg,NetMod,NPV Tunnel တို့တွင် အသုံးပြုနိင်ပါတယ်
-*Key သက်တမ်းကုန်ဆုံးမည့်အချိန် (MST):* \`${EXPIRY_TIME_MST}\`
 ၅နာရီသာသက်တမ်းရှိပါသည်.
 Mytel လိုင်းဖြတ်အတွက်ပါ
 လိုင်းမဖြတ်လဲ သုံးလို့ရပါတယ်
@@ -472,7 +456,6 @@ Project: ${PROJECT_ID}
 Service: ${SERVICE_NAME}
 Region: ${REGION}
 URL: ${SERVICE_URL}
-Key သက်တမ်းကုန်ဆုံးမည့်အချိန် (MST): ${EXPIRY_TIME_MST}
 
 ${VLESS_LINK}
 
